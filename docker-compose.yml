@@ -37,12 +37,12 @@ services:
     # TODO 1: build image từ thư mục gốc của repository (chứa Dockerfile, build.gradle, src/),
     #         truyền build-arg APP_VERSION (giá trị lấy từ biến APP_VERSION, mặc định "local")
     build:
-      context:
+      context: .
       args:
-        APP_VERSION:
+        APP_VERSION: ${APP_VERSION:-local}
     # TODO 2: tên image = <APP_IMAGE>:<APP_TAG>
     #         (mặc định APP_IMAGE=devops-final-app, APP_TAG=latest)
-    image:
+    image: devops-final-app:latest
     restart: unless-stopped
     environment:
       DB_HOST: mysql

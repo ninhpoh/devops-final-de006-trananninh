@@ -14,11 +14,11 @@ COPY build.gradle settings.gradle ./
 RUN gradle build -x test --no-daemon
 
 # Copy mã nguồn rồi đóng gói file JAR (bỏ qua test) COPY --from=build chi lay file JAR
-COPY ./src ./src
+COPY src ./src
 RUN gradle build -x test --no-daemon
 
 # ---------- Stage 2: runtime - chỉ chứa JRE 21 + file JAR ----------
-FROM eclipse-temurin:21-jre-alpine AS runtime
+FROM gradle:8.14.1-jdk21-alpine AS runtime
 
 # Phiên bản ứng dụng truyền vào lúc build (docker compose: build-arg APP_VERSION)
 ARG APP_VERSION=dev
@@ -30,7 +30,7 @@ WORKDIR /app
 # Chạy ứng dụng bằng user thường, không dùng root
 RUN addgroup -S spring && adduser -S spring -G spring
 # Chỉ lấy file JAR từ stage build
-COPY --from=build /app/app.jar /app/app.jar
+COPY --from=build /workspace/build/libs/app.jar /app/app.jar
 USER spring
 
 EXPOSE 8080
